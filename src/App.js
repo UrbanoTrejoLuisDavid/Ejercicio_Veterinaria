@@ -1,25 +1,70 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react"
+import Mascota from "./components/Mascota";
+import Boton from "./components/Boton";
+import Formulario from "./components/Formulario";
 
-function App() {
+export default function App() {
+    const [nombre, setNombre] = useState("");
+    const [contacto, setContacto] = useState("");
+    const [imagen, setImagen] = useState("");
+    const [padecimiento, setPadecimiento] = useState("");
+    const [contador, setContador] = useState(0);
+    const [listaMascotas, setListaMascotas] = useState([]);
+
+    const agregarMascota = () => {
+      let nuevaMascota = {
+        id: contador,
+        nombre: nombre,
+        contacto: contacto,
+        imagen: imagen,
+        padecimiento: padecimiento,
+      }
+      setContador(contador + 1);
+      setListaMascotas([...listaMascotas, nuevaMascota]);
+      // Limpiar los campos después de agregar la mascota
+      setNombre("");
+      setContacto("");
+      setImagen("");
+      setPadecimiento("");
+    }
+
+    const eliminarMascota = (id) => {
+      const nuevaListaMascotas = listaMascotas.filter(mascota => mascota.id !== id);
+      setListaMascotas(nuevaListaMascotas);
+    }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <div className="fluid mt-5 d-flex flex-column align-items-center">
+        <Formulario
+          nombre={nombre}
+          setNombre={setNombre}
+          contacto={contacto}
+          setContacto={setContacto}
+          imagen={imagen}
+          setImagen={setImagen}
+          padecimiento={padecimiento}
+          setPadecimiento={setPadecimiento}
+          agregarMascota={agregarMascota} 
+        />
+        {
+          listaMascotas.length > 0 ? 
+          listaMascotas.map(({nombre, contacto, imagen, padecimiento, id}, index) => {
+            return(
+              <Mascota 
+                key={index}
+                nombre={nombre}
+                contacto={contacto}
+                imagen={imagen}
+                padecimiento={padecimiento}
+                id={id}
+                eliminarMascota={eliminarMascota}
+              />
+            );
+          }):
+          null
+        }
+      </div>
+    </>
+  )
 }
-
-export default App;
